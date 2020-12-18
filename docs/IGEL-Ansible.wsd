@@ -4,9 +4,9 @@ frame DMZ {
 
   object icg {
     hostname: srv-icg-01
-    function: icg, https
-    IP public: 1
-    IP private: 2
+    function: ICG, Filetransfer
+    IP public: 23.236.62.147
+    IP private: 192.168.2.1
   }
 
 }
@@ -15,18 +15,26 @@ frame LAN {
 
   object ums {
     hostname: srv-ums-01
-    function: ums
-    IP private: 3
+    function: UMS
+    IP private: 192.168.1.1
   }
 
-  object client_intern {
+  object nas {
+    hostname: srv-nas-01
+    function: Backup
+    IP private: 192.168.1.2
+  }
+
+  object Device_LAN {
+    function: IGELOS
   }
 
 }
 
 frame WAN {
 
-object client_extern {
+object Device_WAN {
+  function: IGELOS
 }
 
 }
@@ -36,9 +44,10 @@ WAN .down. DMZ
 DMZ .down. LAN
 
 ums -up-> icg
-ums -down-> client_intern
-client_intern -up-> ums
-client_intern -up-> icg
-client_extern -down-> icg
+ums -down-> nas
+ums -down-> Device_LAN
+Device_LAN -up-> ums
+Device_LAN -up-> icg
+Device_WAN -down-> icg
 
 @enduml
