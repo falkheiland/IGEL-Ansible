@@ -1,0 +1,66 @@
+---
+# ansible-playbook configure-icg.yml -i inventories/IGEL/hosts.yml --vault-password-file ~/.vault_pass.txt
+
+- hosts: ICG
+
+  tags:
+    - user
+
+  vars:
+    ansible_user: "{{ base_user }}"
+    ansible_password: "{{ base_user_password }}"
+    ansible_sudo_pass: "{{ base_sudo_pass }}"
+
+  become: true
+
+  roles:
+    - robertdebock.users
+
+  tasks:
+    - name: "Change password for {{default_user}}"
+      user:
+        name: "{{default_user}}"
+        password: "{{ default_user_password | string | password_hash('sha512', 'SecretSalt') }}"
+
+- hosts: ICG
+
+  tags:
+    - system
+
+  become: true
+
+  tasks:
+    - name: "Edit /etc/hosts"
+      tags: hosts
+      replace:
+        path: /etc/hosts
+        regexp: "^(127.0.1.1).+"
+        replace: 127.0.1.1 {{inventory_hostname}}
+
+    - name: "Create {{ icg_ums_filetransfer }} directory if it does not exist"
+      file:
+        path: "{{ icg_ums_filetransfer }}"
+        state: directory
+        mode: "0775"
+        owner: "{{default_user}}"
+        group: www-data
+
+    - name: "Create and edit {{ auth_basic_user_file }}"
+      lineinfile:
+        path: "{{ auth_basic_user_file }}"
+        mode: "0644"
+        line: "{{ auth_basic_user_login }}:{{ auth_basic_user_password }}"
+        create: yes
+
+  roles:
+    - robertdebock.bootstrap
+    - robertdebock.update
+    - robertdebock.auto_update
+    - robertdebock.ntp
+    - robertdebock.locale
+    - robertdebock.hostname
+    - weareinteractive.openssl
+    - geerlingguy.nginx
+    - robertdebock.firewall
+    - geerlingguy.security
+    - falkheiland.igelicg

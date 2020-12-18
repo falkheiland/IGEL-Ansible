@@ -1,0 +1,10 @@
+[sshd]
+enabled = true
+port    = {{ security_ssh_port }}
+filter  = sshd
+
+[nginx-http-auth]
+enabled  = true
+filter   = nginx-http-auth
+port     = {{ nginx_port }}
+logpath  = /var/log/nginx/error.log

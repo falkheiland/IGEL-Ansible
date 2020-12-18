@@ -1,0 +1,120 @@
+---
+# common
+ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+icg_fqdn: icg.igelcommunity.com
+icg_ums_filetransfer: /ums_filetransfer
+auth_basic_user_file: /etc/nginx/.htpasswd
+auth_basic_user_login: ums_filetransfer
+# perl -le 'print crypt("GeheimesPasswort", "Salt")'
+auth_basic_user_password: SaKE.9VOelL1c
+igelicg_internal_ip: 192.168.12.242
+
+# base image user
+base_user: "username"
+base_user_password: "password"
+base_sudo_pass: "password"
+
+# ansible user
+ansible_user: "username"
+ansible_user_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  ...
+
+# default user
+default_user: username
+default_user_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  ...
+
+# root user
+root_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  ...
+
+# default authorized key
+default_authorized_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  ...
+
+# default privat key
+default_id_rsa: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  ...
+
+# default public key
+default_id_rsa_pub: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  ...
+
+# robertdebock.bootstrap
+bootstrap_user: "{{ default_user }}"
+bootstrap_wait_for_host: yes
+
+# robertdebock.users
+users_user_list:
+  - name: root
+    password: "{{ root_password | string | password_hash('sha512', 'SecretSalt') }}"
+  - name: "{{ default_user }}"
+    sudo_options: "ALL=(ALL) NOPASSWD: ALL"
+    authorized_keys:
+      - "{{ default_authorized_key }}"
+
+# weareinteractive.openssl
+openssl_keys:
+  - name: "{{ ssl_key_name }}"
+    key: "{{ ssl_key }}"
+openssl_certs:
+  - name: "{{ ssl_crt_name }}"
+    cert: "{{ ssl_crt }}"
+openssl_keys_path: /etc/ssl/private
+openssl_certs_path: /etc/ssl/private
+openssl_default_key_owner: root
+openssl_default_key_group: root
+openssl_default_cert_owner: root
+openssl_default_cert_group: root
+openssl_cacert_import: yes
+
+# geerlingguy.nginx
+nginx_vhosts:
+  - listen: "{{ nginx_port }} ssl http2"
+    server_name: "{{ icg_fqdn }}"
+    root: "{{ icg_ums_filetransfer }}"
+    state: "present"
+    template: "{{ nginx_vhost_template }}"
+    filename: "{{ icg_fqdn }}.conf"
+    extra_parameters: |
+      location / {
+        autoindex on;
+      }
+      ssl_certificate       /etc/ssl/private/{{ ssl_crt_name }};
+      ssl_certificate_key   /etc/ssl/private/{{ ssl_key_name }};
+      ssl_protocols         TLSv1.1 TLSv1.2;
+      ssl_ciphers           HIGH:!aNULL:!MD5;
+      auth_basic            "UMS Filetransfer";
+      auth_basic_user_file  {{ auth_basic_user_file }};
+nginx_server_tokens: "off"
+
+# robertdebock.ntp
+ntp_timezone: Europe/Berlin
+
+# robertdebock.locale
+locale_lang: de_DE.UTF-8
+locale_timezone: Europe/Berlin
+
+# weareinteractive.openssl
+ssl_crt_name: igelcommunity.com.crt
+ssl_crt: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  ...
+
+ssl_key_name: igelcommunity.com.key
+ssl_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  ...
+
+# rheinwerk.install_root_ca_certs
+root_ca_url: "https://www.igelcommunity.com/certificates/"
+root_cas:
+  - "RootCA.crt"
+  - "IssuingCA01.crt"
+  - "IssuingCA02.crt"

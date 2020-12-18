@@ -1,0 +1,14 @@
+---
+# defaults file for igelicg
+
+# Default Base URL to ICG binary
+igelums_base_url: http://fwu.igel.com/files/IGEL_UNIVERSAL_MANAGEMENT_SUITE/LINUX/
+
+# Default Communication TCP Port to the ICG + between ICG and UMS
+igelums_port: 8443
+
+# Default Download dir
+igelums_dl_dir: "/home/{{ ansible_user }}"
+
+# UMS Dir
+igelums_filetransfer_dir: /opt/IGEL/RemoteManager/rmguiserver/webapps/ums_filetransfer/

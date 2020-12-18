@@ -1,0 +1,44 @@
+@startuml name IGEL-Ansible
+
+frame DMZ {
+
+  object icg {
+    hostname: srv-icg-01
+    function: icg, https
+    IP public: 1
+    IP private: 2
+  }
+
+}
+
+frame LAN {
+
+  object ums {
+    hostname: srv-ums-01
+    function: ums
+    IP private: 3
+  }
+
+  object client_intern {
+  }
+
+}
+
+frame WAN {
+
+object client_extern {
+}
+
+}
+
+
+WAN .down. DMZ
+DMZ .down. LAN
+
+ums -up-> icg
+ums -down-> client_intern
+client_intern -up-> ums
+client_intern -up-> icg
+client_extern -down-> icg
+
+@enduml

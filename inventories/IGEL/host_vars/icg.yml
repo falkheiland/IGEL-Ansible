@@ -1,0 +1,23 @@
+---
+# IGELRMGUIServer Filetransfer, ICG -> UMS
+igelicg_port: 8443
+
+# geerlingguy.nginx
+nginx_port: 8444
+
+# robertdebock.firewall
+firewall_default_rule: allow
+firewall_services:
+  # ssh
+  - name: ssh
+  - name: "{{ igelicg_port }}"
+    protocol: tcp
+  - name: "{{ nginx_port }}"
+    protocol: tcp
+
+# geerlingguy.security
+security_fail2ban_custom_configuration_template: files/ssh_https_jail.local.j2
+
+# falkheiland.igelicg
+igelicg_bin: installer-2.02.110.bin
+igelicg_keystore_dir: files
