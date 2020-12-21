@@ -27,8 +27,8 @@ firewall_services:
 
 # robertdebock.ntp
 ntp_pool:
-  - name: ntp01.int.igelcommunity.com iburst
-  - name: ntp02.int.igelcommunity.com iburst
+  - name: ntp01.lan.igelcommunity.com iburst
+  - name: ntp02.lan.igelcommunity.com iburst
 
 # falkheiland.igelums
 id_rsa_dest: "/home/{{ ansible_user }}/.ssh/id_rsa"
@@ -36,4 +36,4 @@ id_rsa_pub_dest: "/home/{{ ansible_user }}/.ssh/id_rsa.pub"
 igelums_bin: setup-igel-ums-linux_6.06.100.bin
 igelums_backup_path: /backup
 igelums_backup_remote_dir: /path/to/backup/
-igelums_backup_remote_host: backuphost
+igelums_backup_remote_host: srv-nas-01.lan.igelcommunity.com
