@@ -33,9 +33,9 @@ frame LAN {
 
 frame WAN {
 
-object Device_WAN {
-  function: IGELOS
-}
+  object Device_WAN {
+    function: IGELOS
+  }
 
 }
 
