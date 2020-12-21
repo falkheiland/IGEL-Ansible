@@ -5,8 +5,8 @@ frame DMZ {
   object icg {
     hostname: srv-icg-01
     function: ICG, Filetransfer
-    IP public: 23.236.62.147
-    IP private: 192.168.2.1
+    FQDN public: icg.igelcommunity.com
+    FQDN private: srv-icg-01.dmz.igelcommunity.com
   }
 
 }
@@ -16,16 +16,16 @@ frame LAN {
   object ums {
     hostname: srv-ums-01
     function: UMS
-    IP private: 192.168.1.1
+    FQDN private: srv-ums-01.lan.igelcommunity.com
   }
 
   object nas {
     hostname: srv-nas-01
     function: Backup
-    IP private: 192.168.1.2
+    FQDN private: srv-nas-01.lan.igelcommunity.com
   }
 
-  object Device_LAN {
+  object Device01 {
     function: IGELOS
   }
 
@@ -33,7 +33,7 @@ frame LAN {
 
 frame WAN {
 
-  object Device_WAN {
+  object Device02 {
     function: IGELOS
   }
 
@@ -45,9 +45,9 @@ DMZ .down. LAN
 
 ums -up-> icg
 ums -down-> nas
-ums -down-> Device_LAN
-Device_LAN -up-> ums
-Device_LAN -up-> icg
-Device_WAN -down-> icg
+ums -down-> Device01
+Device01 -up-> ums
+Device01 -up-> icg
+Device02 -down-> icg
 
 @enduml
