@@ -1,6 +1,6 @@
 @startuml name IGEL-Ansible
 
-frame DMZ {
+frame DMZ #Orange{
 
   object icg {
     hostname: srv-icg-01
@@ -11,7 +11,7 @@ frame DMZ {
 
 }
 
-frame LAN {
+frame LAN #LightGreen {
 
   object ums {
     hostname: srv-ums-01
@@ -31,7 +31,7 @@ frame LAN {
 
 }
 
-frame WAN {
+frame WAN #Red {
 
   object Device02 {
     function: IGELOS
@@ -39,15 +39,29 @@ frame WAN {
 
 }
 
+map Communication {
+  22 TCP                => SSH
+  8443 TCP              => Filetransfer to Devices; Communication to ICG
+  8444 TCP              => HTTPS
+  30001 TCP             => Devices contacting UMS
+  30005 TCP/UDP         => BC from UMS to Devices; Devices respond to BC from UMS
+  30022 TCP             => Secure Terminal to Devices
+}
 
-WAN .down. DMZ
-DMZ .down. LAN
+Communication .left[#white]. WAN
+WAN .down[#white]. DMZ
+DMZ .down[#white]. LAN
 
-ums -up-> icg
-ums -down-> nas
-ums -down-> Device01
-Device01 -up-> ums
-Device01 -up-> icg
-Device02 -down-> icg
+Device02 -down-> icg: **8443 TCP**
+Device02 -down-> icg: **8444 TCP**
+ums -up-> icg: **8443 TCP**
+ums -up-> icg: **22 TCP**
+ums -right-> nas: **22 TCP**
+Device01 -up-> ums: **8443 TCP**
+Device01 -up-> ums: **30001 TCP**
+Device01 <-up-> ums: **30005 TCP/UDP**
+Device01 <-up- ums: **30022 TCP**
+Device01 -up-> icg: **8444 TCP**
+
 
 @enduml
