@@ -1,7 +1,8 @@
-# dirs
+# roles
 /roles/*/
 !/roles/falkheiland.*/
 
 # files
-/files/id_rsa*
-/files/selfsigned*
+/files/*/
+!/files/*.icg
+!/files/*.j2
