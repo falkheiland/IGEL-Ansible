@@ -3,6 +3,6 @@
 !/roles/falkheiland.*/
 
 # files
-/files/*/
+/files/*
 !/files/*.icg
 !/files/*.j2
