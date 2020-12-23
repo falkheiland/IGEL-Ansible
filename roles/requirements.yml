@@ -18,6 +18,7 @@
   version: 1.1.5
 - src: robertdebock.hostname
   version: 2.0.8
+  #version: 2.0.10
 - src: robertdebock.locale
   version: 2.4.2
 - src: robertdebock.ntp

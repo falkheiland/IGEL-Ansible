@@ -76,12 +76,17 @@
     state: directory
     mode: "0755"
 
+- name: "Check if {{ igelums_backup_path }}/ums_filetransfer.tgz exists"
+  stat:
+    path: "{{ igelums_backup_path }}/ums_filetransfer.tgz"
+  register: stat_result
+
 - name: "Unarchive ums_filetransfer.tgz"
   unarchive:
     src: "{{ igelums_backup_path }}/ums_filetransfer.tgz"
-    #dest: /opt/IGEL/RemoteManager/rmguiserver/webapps/ums_filetransfer/
     dest: /
     remote_src: yes
+  when: stat_result.stat.exists
 
 - name: "Remove {{ igelums_backup_path }}/backup.sh ."
   tags: cron

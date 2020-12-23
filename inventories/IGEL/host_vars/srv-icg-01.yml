@@ -18,6 +18,6 @@ firewall_services:
 # geerlingguy.security
 security_fail2ban_custom_configuration_template: files/ssh_https_jail.local.j2
 
-# falkheiland.igelicg
+# falkheiland.icg
 igelicg_bin: installer-2.02.110.bin
 igelicg_keystore_dir: files

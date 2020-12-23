@@ -3,5 +3,5 @@
 !/roles/falkheiland.*/
 
 # files
-id_rsa
-id_rsa.pub
+/files/id_rsa*
+/files/selfsigned*

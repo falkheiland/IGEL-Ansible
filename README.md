@@ -52,6 +52,14 @@ Ansible works against multiple managed nodes or “hosts” in your infrastructu
 
 Install ansible on a control node: [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
+[How to Install and Configure Ansible on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-ansible-on-ubuntu-18-04-quickstart)
+
+### Install sshpass
+
+```bash
+sudo apt-get install sshpass
+```
+
 ### Clone the repo
 
 Use your favorite Git client (e.g. git, Github Desktop etc.) to clone the IGEL-Ansible repository via HTTPS
@@ -81,6 +89,8 @@ Adjust settings in the following files to reflect your needs.
 
 - `inventories/IGEL/group_vars/all.yml`
   - variables for all managed nodes in the inventory
+  - use the same `~/.ssh/id_rsa` in both the control machine and for the `default_id_rsa` variable
+  - use the same `~/.ssh/id_rsa.pub` in both the control machine and for the `default_id_rsa_pub` variable
 
 - `inventories/IGEL/host_vars/srv-icg-01.yml`
   - variables for the managed node with the name **srv-icg-01.yml**
@@ -118,10 +128,10 @@ test: !vault |
 Encryption successful
 ```
 
-Encrypt the content of the file test.txt as variable "test":
+Encrypt the content of the file test.txt:
 
 ```bash
-ansible-vault encrypt_string test.txt --name test --vault-pass ~/.vault_pass.txt
+cat test.txt | ansible-vault encrypt_string --vault-pass ~/.vault_pass.txt
 test: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           32336666663134643761633965393232626133643262396463383338346537346134343939396438
@@ -151,7 +161,7 @@ $ANSIBLE_VAULT;1.1;AES256
 execute UMS playbook:
 
 ```bash
-ansible-playbook configure_igel_ums.yml -i inventories/ICG/hosts.yml --vault-password-file ~/.vault_pass.txt
+ansible-playbook configure-ums.yml -i inventories/IGEL/hosts.yml --vault-password-file ~/.vault_pass.txt
 ```
 
 ### Configure the UMS
@@ -178,7 +188,7 @@ cd ~
 execute ICG playbook:
 
 ```bash
-ansible-playbook configure_igel_icg.yml -i inventories/ICG/hosts.yml --vault-password-file ~/.vault_pass.txt
+ansible-playbook configure-icg.yml -i inventories/IGEL/hosts.yml --vault-password-file ~/.vault_pass.txt
 ```
 
 - Connect to the host per ssh with configured user account
